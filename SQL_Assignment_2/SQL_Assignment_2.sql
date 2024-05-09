@@ -35,6 +35,107 @@ WHERE EXISTS (
     AND B.customer_id = A.customer_id
 );
 
+
+-------------ÝKÝNCÝ ÇÖZÜM-------------------
+/*
+CREATE VIEW V_PRODUCT_1 AS
+ SELECT DISTINCT d.customer_id, d.first_name, d.last_name
+ FROM	product.product AS A
+		INNER JOIN 
+		sale.order_item AS B
+		ON A.product_id = B.product_id
+		INNER JOIN
+		sale.orders AS C
+		ON B.order_id = C.order_id
+		INNER JOIN
+		sale.customer AS D
+		ON C.customer_id = D.customer_id
+WHERE	A.product_name =  '2TB Red 5400 rpm SATA III 3.5 Internal NAS HDD' 
+
+
+
+ CREATE VIEW V_PRODUCT_2 AS
+ SELECT DISTINCT d.customer_id, d.first_name, d.last_name
+ FROM	product.product AS A
+		INNER JOIN 
+		sale.order_item AS B
+		ON A.product_id = B.product_id
+		INNER JOIN
+		sale.orders AS C
+		ON B.order_id = C.order_id
+		INNER JOIN
+		sale.customer AS D
+		ON C.customer_id = D.customer_id
+WHERE	product_name = 'Polk Audio - 50 W Woofer - Black'
+
+
+
+SELECT	A.*, CASE WHEN B.customer_id IS NULL THEN 'NO' ELSE 'YES' END other_product_is_purchased
+FROM	V_PRODUCT_1 AS A
+		LEFT JOIN
+		V_PRODUCT_2 AS B
+		ON	A.customer_id = B.customer_id
+ORDER BY other_product_is_purchased
+
+
+
+SELECT	A.*, 
+		B.first_name,
+		ISNULL(B.first_name, 'NO'),
+		NULLIF(ISNULL(B.first_name, 'NO'), A.first_name),
+		ISNULL(NULLIF(ISNULL(B.first_name, 'NO'), A.first_name), 'YES') other_product
+FROM	V_PRODUCT_1 AS A
+		LEFT JOIN
+		V_PRODUCT_2 AS B
+		ON	A.customer_id = B.customer_id
+
+
+SELECT	A.*, 
+		ISNULL(NULLIF(ISNULL(B.first_name, 'NO'), A.first_name), 'YES') other_product
+FROM	V_PRODUCT_1 AS A
+		LEFT JOIN
+		V_PRODUCT_2 AS B
+		ON	A.customer_id = B.customer_id
+
+
+
+SELECT	A.*, CASE WHEN B.customer_id IS NULL THEN 'NO' ELSE 'YES' END other_product_is_purchased
+FROM	( 
+			SELECT DISTINCT d.customer_id, d.first_name, d.last_name
+			 FROM	product.product AS A
+					INNER JOIN 
+					sale.order_item AS B
+					ON A.product_id = B.product_id
+					INNER JOIN
+					sale.orders AS C
+					ON B.order_id = C.order_id
+					INNER JOIN
+					sale.customer AS D
+					ON C.customer_id = D.customer_id
+			WHERE	A.product_name =  '2TB Red 5400 rpm SATA III 3.5 Internal NAS HDD' 
+		) AS A
+		LEFT JOIN
+		(
+		 SELECT DISTINCT d.customer_id, d.first_name, d.last_name
+		 FROM	product.product AS A
+				INNER JOIN 
+				sale.order_item AS B
+				ON A.product_id = B.product_id
+				INNER JOIN
+				sale.orders AS C
+				ON B.order_id = C.order_id
+				INNER JOIN
+				sale.customer AS D
+				ON C.customer_id = D.customer_id
+		WHERE	product_name = 'Polk Audio - 50 W Woofer - Black'
+		) AS B
+		ON	A.customer_id = B.customer_id
+ORDER BY other_product_is_purchased
+
+*/
+---------------------------------------------------------------------------------------------------------------------------
+
+
 --SORU 2 DÖNÜÞÜM ORANI (Conversion Rate)
 --Aþaðýda, bir E-Ticaret þirketi tarafýndan verilen iki farklý reklam türüne týklayarak web sitesini ziyaret eden müþterilerin eylemlerinin bir tablosunu görüyorsunuz.
 --Her bir Reklam türü için dönüþüm oranýný döndüren bir sorgu yazýnýz.
